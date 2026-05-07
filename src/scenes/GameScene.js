@@ -1,15 +1,9 @@
-import { BackgroundRenderer } from '../renderer/BackgroundRenderer.js';
-import { BoardRenderer } from '../renderer/BoardRenderer.js';
-import { FoodRenderer } from '../renderer/FoodRenderer.js';
-import { SnakeRenderer } from '../renderer/SnakeRenderer.js';
+import { BackgroundRenderer } from "../renderer/BackgroundRenderer.js";
 
 export class GameScene {
-  constructor(config) {
+  constructor({ config }) {
     this.config = config;
     this.backgroundRenderer = new BackgroundRenderer();
-    this.boardRenderer = new BoardRenderer(config);
-    this.foodRenderer = new FoodRenderer();
-    this.snakeRenderer = new SnakeRenderer();
   }
 
   init() {}
@@ -20,20 +14,19 @@ export class GameScene {
 
   render(renderer) {
     this.backgroundRenderer.render(renderer);
-    const board = this.boardRenderer.render(renderer);
 
-    this.foodRenderer.render(renderer, {
-      x: board.playX + board.playWidth / 2,
-      y: board.playY + board.playHeight * 0.27,
-      size: 62,
-    });
-
-    this.snakeRenderer.render(renderer, {
-      x: board.playX + board.playWidth / 2,
-      y: board.playY + board.playHeight * 0.68,
-      size: 138,
-      direction: { x: 0, y: -1 },
-    });
+    const context = renderer.getContext();
+    context.save();
+    context.fillStyle = "#eafff5";
+    context.font = "48px Arial, sans-serif";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(
+      "Game scene",
+      renderer.getWidth() / 2,
+      renderer.getHeight() / 2,
+    );
+    context.restore();
   }
 
   exit() {}

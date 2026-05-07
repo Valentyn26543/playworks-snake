@@ -1,5 +1,7 @@
+import { githubReadmeUrl } from '../app/AppConfig.js';
+
 export class ExternalNavigationService {
-  open(url) {
-    window.open(url, '_blank', 'noopener,noreferrer');
+  goToReadme() {
+    window.location.href = githubReadmeUrl;
   }
 }

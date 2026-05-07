@@ -10,6 +10,7 @@ import { GameLoop } from '../core/GameLoop.js';
 import { SceneManager } from '../core/SceneManager.js';
 import { KeyboardController } from '../input/KeyboardController.js';
 import { MouseController } from '../input/MouseController.js';
+import { ExternalNavigationService } from '../navigation/ExternalNavigationService.js';
 import { CanvasRenderer } from '../renderer/CanvasRenderer.js';
 import { AdOverlayScene } from '../scenes/AdOverlayScene.js';
 import { BootScene } from '../scenes/BootScene.js';
@@ -30,6 +31,7 @@ export class GameApplication {
     this.config = AppConfig;
     this.renderer = new CanvasRenderer(canvas);
     this.sceneManager = new SceneManager();
+    this.navigationService = new ExternalNavigationService();
     this.keyboardController = new KeyboardController({
       sceneManager: this.sceneManager,
     });
@@ -46,23 +48,31 @@ export class GameApplication {
   }
 
   registerScenes() {
+    const sceneContext = {
+      config: this.config,
+      renderer: this.renderer,
+      sceneManager: this.sceneManager,
+      navigationService: this.navigationService,
+    };
+
     this.sceneManager.register(
       BOOT,
       new BootScene({
-        config: this.config,
-        sceneManager: this.sceneManager,
+        ...sceneContext,
       }),
     );
     this.sceneManager.register(
       START_DIALOG,
       new StartDialogScene({
-        config: this.config,
-        sceneManager: this.sceneManager,
+        ...sceneContext,
       }),
     );
-    this.sceneManager.register(AD_OVERLAY, new AdOverlayScene());
-    this.sceneManager.register(GAME, new GameScene(this.config));
-    this.sceneManager.register(GAME_OVER_DIALOG, new GameOverDialogScene());
+    this.sceneManager.register(AD_OVERLAY, new AdOverlayScene(sceneContext));
+    this.sceneManager.register(GAME, new GameScene(sceneContext));
+    this.sceneManager.register(
+      GAME_OVER_DIALOG,
+      new GameOverDialogScene(sceneContext),
+    );
   }
 
   start() {

@@ -5,20 +5,20 @@ import {
   POINTER_DOWN,
   RIGHT,
 } from '../input/InputActions.js';
-import { GAME } from '../app/constants.js';
+import { AD_OVERLAY, GAME } from '../app/constants.js';
 import { BackgroundRenderer } from '../renderer/BackgroundRenderer.js';
 import { DialogRenderer } from '../renderer/DialogRenderer.js';
 import { ButtonModel } from '../ui/ButtonModel.js';
 import { DialogModel } from '../ui/DialogModel.js';
 
 export class StartDialogScene {
-  constructor({ config, sceneManager }) {
+  constructor({ config, sceneManager, navigationService }) {
     this.config = config;
     this.sceneManager = sceneManager;
+    this.navigationService = navigationService;
     this.backgroundRenderer = new BackgroundRenderer();
     this.dialogRenderer = new DialogRenderer();
     this.dialog = null;
-    this.statusMessage = '';
   }
 
   init() {
@@ -26,7 +26,6 @@ export class StartDialogScene {
   }
 
   enter() {
-    this.statusMessage = '';
     this.dialog.selectedButtonIndex = 0;
     this.dialog.updateSelectedButton();
   }
@@ -36,7 +35,6 @@ export class StartDialogScene {
   render(renderer) {
     this.backgroundRenderer.render(renderer);
     this.dialogRenderer.render(renderer, this.dialog);
-    this.renderStatusMessage(renderer);
   }
 
   exit() {}
@@ -77,7 +75,10 @@ export class StartDialogScene {
       width: 140,
       height: 64,
       label: 'YES',
-      onClick: () => this.sceneManager.switchTo(GAME),
+      onClick: () =>
+        this.sceneManager.switchTo(AD_OVERLAY, {
+          nextScene: GAME,
+        }),
     });
     const noButton = new ButtonModel({
       x: 654,
@@ -85,33 +86,14 @@ export class StartDialogScene {
       width: 140,
       height: 64,
       label: 'NO',
-      onClick: () => {
-        this.statusMessage = 'NO selected';
-      },
+      onClick: () => this.navigationService.goToReadme(),
     });
 
     this.dialog = new DialogModel({
       title: 'SNAKE',
       message: 'Do you want to play?',
       buttons: [yesButton, noButton],
-      onCancel: () => {
-        this.statusMessage = 'Cancel selected';
-      },
+      onCancel: () => this.navigationService.goToReadme(),
     });
-  }
-
-  renderStatusMessage(renderer) {
-    if (!this.statusMessage) {
-      return;
-    }
-
-    const context = renderer.getContext();
-    context.save();
-    context.fillStyle = '#ffdf8b';
-    context.font = '24px Arial, sans-serif';
-    context.textAlign = 'center';
-    context.textBaseline = 'top';
-    context.fillText(this.statusMessage, renderer.getWidth() / 2, 552);
-    context.restore();
   }
 }

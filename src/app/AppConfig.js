@@ -1,6 +1,6 @@
 export const width = 1280;
 export const height = 720;
-export const backgroundColor = '#101318';
+export const backgroundColor = "#101318";
 export const board = {
   columns: 30,
   rows: 30,
@@ -8,7 +8,7 @@ export const board = {
 };
 export const movementInterval = 120;
 export const githubReadmeUrl =
-  'https://github.com/your-username/playworks-snake#readme';
+  "https://github.com/Valentyn26543/playworks-snake";
 
 export const AppConfig = {
   width,
