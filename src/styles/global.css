@@ -1,0 +1,41 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #080b10;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#app {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  background: #101318;
+}
+
+#game-canvas {
+  display: block;
+  width: 1280px;
+  height: 720px;
+}
+
+#ad-container {
+  position: absolute;
+  inset: 0;
+  width: 1280px;
+  height: 720px;
+  display: none;
+  z-index: 10;
+}

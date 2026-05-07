@@ -1,0 +1,3 @@
+export class DialogRenderer {
+  render() {}
+}
