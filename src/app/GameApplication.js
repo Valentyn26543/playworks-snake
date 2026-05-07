@@ -53,9 +53,15 @@ export class GameApplication {
         sceneManager: this.sceneManager,
       }),
     );
-    this.sceneManager.register(START_DIALOG, new StartDialogScene(this.config));
+    this.sceneManager.register(
+      START_DIALOG,
+      new StartDialogScene({
+        config: this.config,
+        sceneManager: this.sceneManager,
+      }),
+    );
     this.sceneManager.register(AD_OVERLAY, new AdOverlayScene());
-    this.sceneManager.register(GAME, new GameScene());
+    this.sceneManager.register(GAME, new GameScene(this.config));
     this.sceneManager.register(GAME_OVER_DIALOG, new GameOverDialogScene());
   }
 

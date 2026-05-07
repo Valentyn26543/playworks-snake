@@ -6,12 +6,12 @@ export class HitArea {
     this.height = height;
   }
 
-  contains(point) {
+  contains(pointX, pointY) {
     return (
-      point.x >= this.x &&
-      point.x <= this.x + this.width &&
-      point.y >= this.y &&
-      point.y <= this.y + this.height
+      pointX >= this.x &&
+      pointX <= this.x + this.width &&
+      pointY >= this.y &&
+      pointY <= this.y + this.height
     );
   }
 }
