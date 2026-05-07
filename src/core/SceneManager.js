@@ -29,8 +29,8 @@ export class SceneManager {
     this.activeScene?.render?.(renderer);
   }
 
-  handleInput(action) {
-    this.activeScene?.handleInput?.(action);
+  handleInput(action, payload) {
+    this.activeScene?.handleInput?.(action, payload);
   }
 
   destroy() {

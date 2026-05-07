@@ -1,18 +1,14 @@
-import { InputActions } from './InputActions.js';
+import { CANCEL, CONFIRM, DOWN, LEFT, RIGHT, UP } from './InputActions.js';
 
 export class InputMapper {
   mapKey(code) {
     const keyMap = {
-      ArrowUp: InputActions.MOVE_UP,
-      KeyW: InputActions.MOVE_UP,
-      ArrowDown: InputActions.MOVE_DOWN,
-      KeyS: InputActions.MOVE_DOWN,
-      ArrowLeft: InputActions.MOVE_LEFT,
-      KeyA: InputActions.MOVE_LEFT,
-      ArrowRight: InputActions.MOVE_RIGHT,
-      KeyD: InputActions.MOVE_RIGHT,
-      Enter: InputActions.CONFIRM,
-      Space: InputActions.CONFIRM,
+      ArrowUp: UP,
+      ArrowRight: RIGHT,
+      ArrowDown: DOWN,
+      ArrowLeft: LEFT,
+      Enter: CONFIRM,
+      Backspace: CANCEL,
     };
 
     return keyMap[code] ?? null;

@@ -8,6 +8,8 @@ import {
 } from './constants.js';
 import { GameLoop } from '../core/GameLoop.js';
 import { SceneManager } from '../core/SceneManager.js';
+import { KeyboardController } from '../input/KeyboardController.js';
+import { MouseController } from '../input/MouseController.js';
 import { CanvasRenderer } from '../renderer/CanvasRenderer.js';
 import { AdOverlayScene } from '../scenes/AdOverlayScene.js';
 import { BootScene } from '../scenes/BootScene.js';
@@ -28,6 +30,13 @@ export class GameApplication {
     this.config = AppConfig;
     this.renderer = new CanvasRenderer(canvas);
     this.sceneManager = new SceneManager();
+    this.keyboardController = new KeyboardController({
+      sceneManager: this.sceneManager,
+    });
+    this.mouseController = new MouseController({
+      canvas,
+      sceneManager: this.sceneManager,
+    });
     this.loop = new GameLoop({
       update: (deltaTime) => this.update(deltaTime),
       render: () => this.render(),
@@ -52,11 +61,15 @@ export class GameApplication {
 
   start() {
     this.sceneManager.switchTo(BOOT);
+    this.keyboardController.start();
+    this.mouseController.start();
     this.loop.start();
   }
 
   stop() {
     this.loop.stop();
+    this.keyboardController.destroy();
+    this.mouseController.destroy();
   }
 
   destroy() {
