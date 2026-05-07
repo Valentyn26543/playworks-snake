@@ -1,75 +1,57 @@
 export class FoodRenderer {
-  render(renderer, { x, y, size = 58 }) {
+  render(renderer, snapshot, boardLayout) {
+    const food = snapshot.foodPosition;
+
+    if (!food) {
+      return;
+    }
+
     const context = renderer.getContext();
-    const radius = size / 2;
+    const centerX =
+      boardLayout.x + food.x * boardLayout.cellSize + boardLayout.cellSize / 2;
+    const centerY =
+      boardLayout.y + food.y * boardLayout.cellSize + boardLayout.cellSize / 2;
+    const radius = boardLayout.cellSize * 0.38;
 
     context.save();
-    context.translate(x, y);
+    context.shadowColor = 'rgba(255, 45, 85, 0.46)';
+    context.shadowBlur = 12;
+    context.shadowOffsetY = 2;
 
-    context.shadowColor = 'rgba(0, 0, 0, 0.28)';
-    context.shadowBlur = 10;
-    context.shadowOffsetY = 8;
-
-    const appleGradient = context.createRadialGradient(
-      -radius * 0.35,
-      -radius * 0.4,
+    const gradient = context.createRadialGradient(
+      centerX - radius * 0.4,
+      centerY - radius * 0.45,
       radius * 0.2,
-      0,
-      0,
+      centerX,
+      centerY,
       radius,
     );
-    appleGradient.addColorStop(0, '#ff5a4f');
-    appleGradient.addColorStop(0.54, '#e71820');
-    appleGradient.addColorStop(1, '#a90815');
+    gradient.addColorStop(0, '#ffe66d');
+    gradient.addColorStop(0.32, '#ff4d6d');
+    gradient.addColorStop(1, '#b7094c');
 
-    context.fillStyle = appleGradient;
+    context.fillStyle = gradient;
     context.beginPath();
-    context.moveTo(0, -radius * 0.72);
-    context.bezierCurveTo(
-      radius * 0.88,
-      -radius * 1.02,
-      radius * 1.1,
-      radius * 0.16,
-      radius * 0.54,
-      radius * 0.86,
-    );
-    context.bezierCurveTo(
-      radius * 0.2,
-      radius * 1.16,
-      -radius * 0.2,
-      radius * 1.16,
-      -radius * 0.54,
-      radius * 0.86,
-    );
-    context.bezierCurveTo(
-      -radius * 1.1,
-      radius * 0.16,
-      -radius * 0.88,
-      -radius * 1.02,
-      0,
-      -radius * 0.72,
-    );
+    context.arc(centerX, centerY, radius, 0, Math.PI * 2);
     context.fill();
 
     context.shadowColor = 'transparent';
-    context.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    context.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+    context.lineWidth = 2;
     context.beginPath();
-    context.ellipse(-radius * 0.34, -radius * 0.35, 8, 14, 0.6, 0, Math.PI * 2);
-    context.fill();
-
-    context.strokeStyle = '#6b3309';
-    context.lineWidth = 6;
-    context.lineCap = 'round';
-    context.beginPath();
-    context.moveTo(1, -radius * 0.8);
-    context.quadraticCurveTo(7, -radius * 1.18, 20, -radius * 1.1);
+    context.arc(centerX, centerY, radius - 1, 0, Math.PI * 2);
     context.stroke();
 
-    context.fillStyle = '#55a923';
+    context.fillStyle = 'rgba(255, 255, 255, 0.7)';
     context.beginPath();
-    context.ellipse(18, -radius * 1.02, 14, 7, 0.35, 0, Math.PI * 2);
+    context.arc(
+      centerX - radius * 0.3,
+      centerY - radius * 0.35,
+      radius * 0.22,
+      0,
+      Math.PI * 2,
+    );
     context.fill();
-
     context.restore();
   }
 }

@@ -1,193 +1,88 @@
 export class BoardRenderer {
   constructor(config) {
     this.config = config;
-    this.borderSize = 56;
-    this.cornerRadius = 88;
-  }
-
-  getLayout(renderer) {
-    const playWidth = this.config.board.columns * this.config.board.cellSize;
-    const playHeight = this.config.board.rows * this.config.board.cellSize;
-    const outerWidth = playWidth + this.borderSize * 2;
-    const outerHeight = playHeight + this.borderSize * 2;
-    const outerX = Math.round((renderer.getWidth() - outerWidth) / 2);
-    const outerY = Math.round((renderer.getHeight() - outerHeight) / 2);
-
-    return {
-      outerX,
-      outerY,
-      outerWidth,
-      outerHeight,
-      playX: outerX + this.borderSize,
-      playY: outerY + this.borderSize,
-      playWidth,
-      playHeight,
-    };
+    this.layout = null;
   }
 
   render(renderer) {
     const context = renderer.getContext();
-    const layout = this.getLayout(renderer);
+    const { columns, rows, cellSize } = this.config.board;
+    const width = columns * cellSize;
+    const height = rows * cellSize;
+    const x = Math.round((renderer.getWidth() - width) / 2);
+    const y = Math.round((renderer.getHeight() - height) / 2 + 24);
 
-    this.drawOuterShadow(context, layout);
-    this.drawStripedBorder(context, layout);
-    this.drawPlayField(context, layout);
+    this.layout = { x, y, width, height, columns, rows, cellSize };
 
-    return layout;
+    this.drawBoard(context, this.layout);
+    this.drawGrid(context, this.layout);
+    this.drawBorder(context, this.layout);
+
+    return this.layout;
   }
 
-  drawOuterShadow(context, layout) {
+  getBoardPosition() {
+    return this.layout;
+  }
+
+  drawBoard(context, layout) {
     context.save();
-    context.shadowColor = 'rgba(0, 0, 0, 0.32)';
-    context.shadowBlur = 28;
-    context.shadowOffsetY = 16;
-    this.createRoundRectPath(
-      context,
-      layout.outerX,
-      layout.outerY,
-      layout.outerWidth,
-      layout.outerHeight,
-      this.cornerRadius,
+    context.shadowColor = 'rgba(0, 0, 0, 0.35)';
+    context.shadowBlur = 24;
+    context.shadowOffsetY = 12;
+
+    const gradient = context.createLinearGradient(
+      layout.x,
+      layout.y,
+      layout.x,
+      layout.y + layout.height,
     );
-    context.fillStyle = '#2e7d32';
-    context.fill();
+    gradient.addColorStop(0, '#5fbe37');
+    gradient.addColorStop(1, '#3e9f2b');
+
+    context.fillStyle = gradient;
+    context.fillRect(layout.x, layout.y, layout.width, layout.height);
     context.restore();
   }
 
-  drawStripedBorder(context, layout) {
+  drawGrid(context, layout) {
     context.save();
-    this.createRoundRectPath(
-      context,
-      layout.outerX,
-      layout.outerY,
-      layout.outerWidth,
-      layout.outerHeight,
-      this.cornerRadius,
-    );
-    context.clip();
+    context.strokeStyle = 'rgba(18, 94, 32, 0.22)';
+    context.lineWidth = 1;
 
-    const borderGradient = context.createLinearGradient(
-      layout.outerX,
-      layout.outerY,
-      layout.outerX + layout.outerWidth,
-      layout.outerY + layout.outerHeight,
-    );
-    borderGradient.addColorStop(0, '#4fa73b');
-    borderGradient.addColorStop(0.5, '#2f8e35');
-    borderGradient.addColorStop(1, '#1f7431');
-    context.fillStyle = borderGradient;
-    context.fillRect(
-      layout.outerX,
-      layout.outerY,
-      layout.outerWidth,
-      layout.outerHeight,
-    );
-
-    this.drawBorderStripes(context, layout);
-
-    context.lineWidth = 2;
-    context.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    this.strokeRoundRect(
-      context,
-      layout.outerX + 1,
-      layout.outerY + 1,
-      layout.outerWidth - 2,
-      layout.outerHeight - 2,
-      this.cornerRadius,
-    );
-    context.restore();
-  }
-
-  drawBorderStripes(context, layout) {
-    context.save();
-    context.fillStyle = '#d7d646';
-    const stripeLength = 62;
-    const stripeWidth = 34;
-    const step = 132;
-    const top = layout.outerY + 4;
-    const bottom = layout.outerY + layout.outerHeight - this.borderSize + 4;
-    const left = layout.outerX + 4;
-    const right = layout.outerX + layout.outerWidth - this.borderSize + 4;
-
-    for (let x = layout.outerX + 86; x < layout.outerX + layout.outerWidth - 80; x += step) {
-      this.drawCapsule(context, x, top, stripeWidth, stripeLength, stripeWidth / 2);
-      this.drawCapsule(context, x, bottom, stripeWidth, stripeLength, stripeWidth / 2);
+    for (let column = 1; column < layout.columns; column += 1) {
+      const x = layout.x + column * layout.cellSize;
+      context.beginPath();
+      context.moveTo(x + 0.5, layout.y);
+      context.lineTo(x + 0.5, layout.y + layout.height);
+      context.stroke();
     }
 
-    for (let y = layout.outerY + 86; y < layout.outerY + layout.outerHeight - 80; y += step) {
-      this.drawCapsule(context, left, y, stripeLength, stripeWidth, stripeWidth / 2);
-      this.drawCapsule(context, right, y, stripeLength, stripeWidth, stripeWidth / 2);
+    for (let row = 1; row < layout.rows; row += 1) {
+      const y = layout.y + row * layout.cellSize;
+      context.beginPath();
+      context.moveTo(layout.x, y + 0.5);
+      context.lineTo(layout.x + layout.width, y + 0.5);
+      context.stroke();
     }
 
     context.restore();
   }
 
-  drawPlayField(context, layout) {
+  drawBorder(context, layout) {
     context.save();
-    const fieldRadius = 28;
-    const fieldGradient = context.createLinearGradient(
-      layout.playX,
-      layout.playY,
-      layout.playX,
-      layout.playY + layout.playHeight,
+    context.lineWidth = 8;
+    context.strokeStyle = '#276f2d';
+    context.strokeRect(
+      layout.x - 4,
+      layout.y - 4,
+      layout.width + 8,
+      layout.height + 8,
     );
-    fieldGradient.addColorStop(0, '#5abe35');
-    fieldGradient.addColorStop(1, '#3ea128');
 
-    context.shadowColor = 'rgba(0, 0, 0, 0.24)';
-    context.shadowBlur = 18;
-    context.shadowOffsetY = 8;
-    this.createRoundRectPath(
-      context,
-      layout.playX,
-      layout.playY,
-      layout.playWidth,
-      layout.playHeight,
-      fieldRadius,
-    );
-    context.fillStyle = fieldGradient;
-    context.fill();
-
-    context.shadowColor = 'transparent';
-    context.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     context.lineWidth = 2;
-    this.strokeRoundRect(
-      context,
-      layout.playX + 1,
-      layout.playY + 1,
-      layout.playWidth - 2,
-      layout.playHeight - 2,
-      fieldRadius,
-    );
+    context.strokeStyle = 'rgba(233, 255, 223, 0.45)';
+    context.strokeRect(layout.x, layout.y, layout.width, layout.height);
     context.restore();
-  }
-
-  drawCapsule(context, x, y, width, height, radius) {
-    this.createRoundRectPath(context, x, y, width, height, radius);
-    context.fill();
-  }
-
-  strokeRoundRect(context, x, y, width, height, radius) {
-    this.createRoundRectPath(context, x, y, width, height, radius);
-    context.stroke();
-  }
-
-  createRoundRectPath(context, x, y, width, height, radius) {
-    context.beginPath();
-    context.moveTo(x + radius, y);
-    context.lineTo(x + width - radius, y);
-    context.quadraticCurveTo(x + width, y, x + width, y + radius);
-    context.lineTo(x + width, y + height - radius);
-    context.quadraticCurveTo(
-      x + width,
-      y + height,
-      x + width - radius,
-      y + height,
-    );
-    context.lineTo(x + radius, y + height);
-    context.quadraticCurveTo(x, y + height, x, y + height - radius);
-    context.lineTo(x, y + radius);
-    context.quadraticCurveTo(x, y, x + radius, y);
-    context.closePath();
   }
 }

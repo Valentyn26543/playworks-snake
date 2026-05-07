@@ -1,87 +1,80 @@
 export class SnakeRenderer {
-  render(renderer, { x, y, size = 132, direction = { x: 0, y: -1 } }) {
-    const context = renderer.getContext();
-
-    context.save();
-    context.translate(x, y);
-    this.rotateForDirection(context, direction);
-
-    this.drawHead(context, size);
-    this.drawEyes(context, size);
-
-    context.restore();
+  render(renderer, snapshot, boardLayout) {
+    snapshot.snakeBody.forEach((cell, index) => {
+      this.drawSegment(renderer.getContext(), cell, boardLayout, index === 0);
+    });
   }
 
-  rotateForDirection(context, direction) {
-    if (direction.x === 1) {
-      context.rotate(Math.PI / 2);
-      return;
-    }
-
-    if (direction.x === -1) {
-      context.rotate(-Math.PI / 2);
-      return;
-    }
-
-    if (direction.y === 1) {
-      context.rotate(Math.PI);
-    }
-  }
-
-  drawHead(context, size) {
-    const half = size / 2;
+  drawSegment(context, cell, boardLayout, isHead) {
+    const padding = isHead ? 2 : 3;
+    const x = boardLayout.x + cell.x * boardLayout.cellSize + padding;
+    const y = boardLayout.y + cell.y * boardLayout.cellSize + padding;
+    const size = boardLayout.cellSize - padding * 2;
+    const radius = isHead ? 6 : 5;
 
     context.save();
-    context.shadowColor = 'rgba(0, 0, 0, 0.26)';
-    context.shadowBlur = 14;
-    context.shadowOffsetY = 10;
+    context.shadowColor = isHead
+      ? 'rgba(12, 74, 30, 0.42)'
+      : 'rgba(12, 74, 30, 0.22)';
+    context.shadowBlur = isHead ? 8 : 4;
+    context.shadowOffsetY = 2;
 
-    const gradient = context.createLinearGradient(0, -half, 0, half);
-    gradient.addColorStop(0, '#5dbd39');
-    gradient.addColorStop(1, '#2f8f30');
+    const gradient = context.createLinearGradient(x, y, x, y + size);
+    gradient.addColorStop(0, isHead ? '#7ced4b' : '#62c83d');
+    gradient.addColorStop(1, isHead ? '#258d37' : '#2d9c35');
     context.fillStyle = gradient;
-
-    context.beginPath();
-    context.moveTo(0, -half);
-    context.bezierCurveTo(half * 0.7, -half * 0.5, half * 0.78, half * 0.34, half * 0.28, half);
-    context.lineTo(-half * 0.28, half);
-    context.bezierCurveTo(-half * 0.78, half * 0.34, -half * 0.7, -half * 0.5, 0, -half);
+    this.roundRect(context, x, y, size, size, radius);
     context.fill();
 
-    context.restore();
+    context.shadowColor = 'transparent';
+    context.strokeStyle = isHead
+      ? 'rgba(240, 255, 232, 0.68)'
+      : 'rgba(240, 255, 232, 0.2)';
+    context.lineWidth = isHead ? 2 : 1;
+    this.roundRect(context, x, y, size, size, radius);
+    context.stroke();
 
-    context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    if (isHead) {
+      this.drawEyes(context, x, y, size);
+    }
+
+    context.restore();
+  }
+
+  drawEyes(context, x, y, size) {
+    const eyeY = y + size * 0.34;
+    const leftEyeX = x + size * 0.34;
+    const rightEyeX = x + size * 0.66;
+
+    context.fillStyle = '#f8fff4';
     context.beginPath();
-    context.ellipse(-half * 0.2, -half * 0.1, half * 0.13, half * 0.38, -0.24, 0, Math.PI * 2);
+    context.arc(leftEyeX, eyeY, 2.6, 0, Math.PI * 2);
+    context.arc(rightEyeX, eyeY, 2.6, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = '#142117';
+    context.beginPath();
+    context.arc(leftEyeX + 0.8, eyeY, 1.2, 0, Math.PI * 2);
+    context.arc(rightEyeX + 0.8, eyeY, 1.2, 0, Math.PI * 2);
     context.fill();
   }
 
-  drawEyes(context, size) {
-    const half = size / 2;
-
-    this.drawEye(context, -half * 0.24, -half * 0.18, -0.24);
-    this.drawEye(context, half * 0.24, -half * 0.18, 0.24);
-
-    context.fillStyle = '#101318';
+  roundRect(context, x, y, width, height, radius) {
     context.beginPath();
-    context.arc(-half * 0.15, -half * 0.48, 5, 0, Math.PI * 2);
-    context.arc(half * 0.15, -half * 0.48, 5, 0, Math.PI * 2);
-    context.fill();
-  }
-
-  drawEye(context, x, y, rotation) {
-    context.save();
-    context.translate(x, y);
-    context.rotate(rotation);
-    context.fillStyle = '#f7fbff';
-    context.beginPath();
-    context.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
-    context.fill();
-
-    context.fillStyle = '#101318';
-    context.beginPath();
-    context.arc(4, 0, 4, 0, Math.PI * 2);
-    context.fill();
-    context.restore();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + width - radius, y);
+    context.quadraticCurveTo(x + width, y, x + width, y + radius);
+    context.lineTo(x + width, y + height - radius);
+    context.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height,
+    );
+    context.lineTo(x + radius, y + height);
+    context.quadraticCurveTo(x, y + height, x, y + height - radius);
+    context.lineTo(x, y + radius);
+    context.quadraticCurveTo(x, y, x + radius, y);
+    context.closePath();
   }
 }
