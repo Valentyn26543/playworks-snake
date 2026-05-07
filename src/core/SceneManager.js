@@ -6,6 +6,7 @@ export class SceneManager {
 
   add(name, scene) {
     this.scenes.set(name, scene);
+    scene.init?.();
   }
 
   change(name, data) {
@@ -18,7 +19,18 @@ export class SceneManager {
     this.currentScene?.update?.(deltaTime);
   }
 
-  render(context) {
-    this.currentScene?.render?.(context);
+  render(renderer) {
+    this.currentScene?.render?.(renderer);
+  }
+
+  handleInput(action) {
+    this.currentScene?.handleInput?.(action);
+  }
+
+  destroy() {
+    this.currentScene?.exit?.();
+    this.scenes.forEach((scene) => scene.destroy?.());
+    this.scenes.clear();
+    this.currentScene = null;
   }
 }

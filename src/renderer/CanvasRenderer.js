@@ -1,12 +1,26 @@
 export class CanvasRenderer {
-  constructor(canvas, config) {
+  constructor(canvas) {
     this.canvas = canvas;
-    this.config = config;
     this.context = canvas.getContext('2d');
+
+    if (!this.context) {
+      throw new Error('CanvasRenderer requires a 2D canvas context.');
+    }
   }
 
   clear() {
-    this.context.fillStyle = this.config.backgroundColor;
-    this.context.fillRect(0, 0, this.config.width, this.config.height);
+    this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
+  }
+
+  getContext() {
+    return this.context;
+  }
+
+  getWidth() {
+    return this.canvas.width;
+  }
+
+  getHeight() {
+    return this.canvas.height;
   }
 }

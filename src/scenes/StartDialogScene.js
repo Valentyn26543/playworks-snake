@@ -1,9 +1,15 @@
 export class StartDialogScene {
-  enter() {}
+  init() {}
 
-  exit() {}
+  enter() {}
 
   update() {}
 
   render() {}
+
+  exit() {}
+
+  destroy() {}
+
+  handleInput() {}
 }

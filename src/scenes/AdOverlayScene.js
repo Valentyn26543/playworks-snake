@@ -1,9 +1,15 @@
 export class AdOverlayScene {
-  enter() {}
+  init() {}
 
-  exit() {}
+  enter() {}
 
   update() {}
 
   render() {}
+
+  exit() {}
+
+  destroy() {}
+
+  handleInput() {}
 }

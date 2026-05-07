@@ -1,22 +1,22 @@
 import { AppConfig } from './AppConfig.js';
 import { BOOT } from './constants.js';
-import { EventBus } from '../core/EventBus.js';
 import { GameLoop } from '../core/GameLoop.js';
 import { SceneManager } from '../core/SceneManager.js';
 import { CanvasRenderer } from '../renderer/CanvasRenderer.js';
 import { BootScene } from '../scenes/BootScene.js';
 
 export class GameApplication {
-  constructor({ canvas, adContainer } = {}) {
+  constructor() {
+    const canvas = document.querySelector('#game-canvas');
+
     if (!canvas) {
-      throw new Error('GameApplication requires a canvas element.');
+      throw new Error('Could not find canvas#game-canvas.');
     }
 
     this.canvas = canvas;
-    this.adContainer = adContainer;
+    this.adContainer = document.querySelector('#ad-container');
     this.config = AppConfig;
-    this.events = new EventBus();
-    this.renderer = new CanvasRenderer(canvas, this.config);
+    this.renderer = new CanvasRenderer(canvas);
     this.sceneManager = new SceneManager();
     this.loop = new GameLoop({
       update: (deltaTime) => this.update(deltaTime),
@@ -27,7 +27,7 @@ export class GameApplication {
   }
 
   registerScenes() {
-    this.sceneManager.add(BOOT, new BootScene());
+    this.sceneManager.add(BOOT, new BootScene(this.config));
   }
 
   start() {
@@ -45,6 +45,6 @@ export class GameApplication {
 
   render() {
     this.renderer.clear();
-    this.sceneManager.render(this.renderer.context);
+    this.sceneManager.render(this.renderer);
   }
 }
