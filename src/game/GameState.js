@@ -1,7 +1,9 @@
+export const IDLE = 'IDLE';
+export const RUNNING = 'RUNNING';
+export const GAME_OVER = 'GAME_OVER';
+
 export const GameState = {
-  IDLE: 'IDLE',
-  READY: 'READY',
-  RUNNING: 'RUNNING',
-  PAUSED: 'PAUSED',
-  GAME_OVER: 'GAME_OVER',
+  IDLE,
+  RUNNING,
+  GAME_OVER,
 };

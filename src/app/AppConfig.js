@@ -8,7 +8,7 @@ export const board = {
 };
 export const movementInterval = 120;
 export const githubReadmeUrl =
-  "https://github.com/Valentyn26543/playworks-snake";
+  "https://github.com/Valentyn26543/playworks-snake/blob/main/README.md";
 
 export const AppConfig = {
   width,
