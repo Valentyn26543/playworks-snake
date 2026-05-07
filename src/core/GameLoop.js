@@ -24,6 +24,8 @@ export class GameLoop {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
+
+    this.lastTime = 0;
   }
 
   tick(time) {

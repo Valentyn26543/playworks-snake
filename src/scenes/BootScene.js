@@ -1,17 +1,28 @@
+import { START_DIALOG } from '../app/constants.js';
+
 export class BootScene {
-  constructor(config) {
+  constructor({ config, sceneManager }) {
     this.config = config;
+    this.sceneManager = sceneManager;
     this.elapsedTime = 0;
+    this.bootDuration = 1000;
+    this.hasCompleted = false;
   }
 
   init() {}
 
   enter() {
     this.elapsedTime = 0;
+    this.hasCompleted = false;
   }
 
   update(deltaTime) {
     this.elapsedTime += deltaTime;
+
+    if (!this.hasCompleted && this.elapsedTime >= this.bootDuration) {
+      this.hasCompleted = true;
+      this.sceneManager.switchTo(START_DIALOG);
+    }
   }
 
   render(renderer) {

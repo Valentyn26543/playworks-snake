@@ -1,9 +1,19 @@
 import { AppConfig } from './AppConfig.js';
-import { BOOT } from './constants.js';
+import {
+  AD_OVERLAY,
+  BOOT,
+  GAME,
+  GAME_OVER_DIALOG,
+  START_DIALOG,
+} from './constants.js';
 import { GameLoop } from '../core/GameLoop.js';
 import { SceneManager } from '../core/SceneManager.js';
 import { CanvasRenderer } from '../renderer/CanvasRenderer.js';
+import { AdOverlayScene } from '../scenes/AdOverlayScene.js';
 import { BootScene } from '../scenes/BootScene.js';
+import { GameOverDialogScene } from '../scenes/GameOverDialogScene.js';
+import { GameScene } from '../scenes/GameScene.js';
+import { StartDialogScene } from '../scenes/StartDialogScene.js';
 
 export class GameApplication {
   constructor() {
@@ -27,16 +37,31 @@ export class GameApplication {
   }
 
   registerScenes() {
-    this.sceneManager.add(BOOT, new BootScene(this.config));
+    this.sceneManager.register(
+      BOOT,
+      new BootScene({
+        config: this.config,
+        sceneManager: this.sceneManager,
+      }),
+    );
+    this.sceneManager.register(START_DIALOG, new StartDialogScene(this.config));
+    this.sceneManager.register(AD_OVERLAY, new AdOverlayScene());
+    this.sceneManager.register(GAME, new GameScene());
+    this.sceneManager.register(GAME_OVER_DIALOG, new GameOverDialogScene());
   }
 
   start() {
-    this.sceneManager.change(BOOT);
+    this.sceneManager.switchTo(BOOT);
     this.loop.start();
   }
 
   stop() {
     this.loop.stop();
+  }
+
+  destroy() {
+    this.stop();
+    this.sceneManager.destroy();
   }
 
   update(deltaTime) {
