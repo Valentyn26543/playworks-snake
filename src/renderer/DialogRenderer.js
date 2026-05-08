@@ -150,25 +150,28 @@ export class DialogRenderer {
   }
 
   wrapText(context, text, maxWidth) {
-    const words = text.split(' ');
     const lines = [];
-    let line = '';
 
-    words.forEach((word) => {
-      const testLine = line ? `${line} ${word}` : word;
+    text.split('\n').forEach((paragraph) => {
+      const words = paragraph.split(' ');
+      let line = '';
 
-      if (context.measureText(testLine).width > maxWidth && line) {
+      words.forEach((word) => {
+        const testLine = line ? `${line} ${word}` : word;
+
+        if (context.measureText(testLine).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+          return;
+        }
+
+        line = testLine;
+      });
+
+      if (line) {
         lines.push(line);
-        line = word;
-        return;
       }
-
-      line = testLine;
     });
-
-    if (line) {
-      lines.push(line);
-    }
 
     return lines;
   }

@@ -1,47 +1,91 @@
+import { AD_OVERLAY, GAME } from '../app/constants.js';
+import { CANCEL, CONFIRM, LEFT, POINTER_DOWN, RIGHT } from '../input/InputActions.js';
 import { BackgroundRenderer } from '../renderer/BackgroundRenderer.js';
+import { DialogRenderer } from '../renderer/DialogRenderer.js';
+import { ButtonModel } from '../ui/ButtonModel.js';
+import { DialogModel } from '../ui/DialogModel.js';
 
 export class GameOverDialogScene {
-  constructor() {
+  constructor({ sceneManager, navigationService }) {
+    this.sceneManager = sceneManager;
+    this.navigationService = navigationService;
     this.backgroundRenderer = new BackgroundRenderer();
+    this.dialogRenderer = new DialogRenderer();
+    this.dialog = null;
     this.finalScore = 0;
   }
 
   init() {}
 
   enter(params = {}) {
-    this.finalScore = params.finalScore ?? 0;
+    this.finalScore = params.finalScore ?? params.score ?? 0;
+    this.createDialog();
   }
 
   update() {}
 
   render(renderer) {
     this.backgroundRenderer.render(renderer);
-
-    const context = renderer.getContext();
-    context.save();
-    context.fillStyle = '#eafff5';
-    context.font = '700 56px Arial, sans-serif';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(
-      'Game Over',
-      renderer.getWidth() / 2,
-      renderer.getHeight() / 2 - 36,
-    );
-
-    context.fillStyle = '#b7f7c8';
-    context.font = '32px Arial, sans-serif';
-    context.fillText(
-      `Score: ${this.finalScore}`,
-      renderer.getWidth() / 2,
-      renderer.getHeight() / 2 + 28,
-    );
-    context.restore();
+    this.dialogRenderer.render(renderer, this.dialog);
   }
 
   exit() {}
 
   destroy() {}
 
-  handleInput() {}
+  handleInput(action, payload) {
+    if (action === LEFT) {
+      this.dialog.selectPrevious();
+      return;
+    }
+
+    if (action === RIGHT) {
+      this.dialog.selectNext();
+      return;
+    }
+
+    if (action === CONFIRM) {
+      this.dialog.confirmSelected();
+      return;
+    }
+
+    if (action === CANCEL) {
+      this.navigationService.goToReadme();
+      return;
+    }
+
+    if (action === POINTER_DOWN && payload) {
+      this.dialog.handlePointer(payload.x, payload.y);
+    }
+  }
+
+  createDialog() {
+    const buttonY = 456;
+    const yesButton = new ButtonModel({
+      x: 486,
+      y: buttonY,
+      width: 140,
+      height: 64,
+      label: 'YES',
+      onClick: () =>
+        this.sceneManager.switchTo(AD_OVERLAY, {
+          nextScene: GAME,
+        }),
+    });
+    const noButton = new ButtonModel({
+      x: 654,
+      y: buttonY,
+      width: 140,
+      height: 64,
+      label: 'NO',
+      onClick: () => this.navigationService.goToReadme(),
+    });
+
+    this.dialog = new DialogModel({
+      title: 'GAME OVER',
+      message: `Score: ${this.finalScore}\nPlay again?`,
+      buttons: [yesButton, noButton],
+      onCancel: () => this.navigationService.goToReadme(),
+    });
+  }
 }
