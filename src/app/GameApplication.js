@@ -8,6 +8,7 @@ import {
 } from './constants.js';
 import { GameLoop } from '../core/GameLoop.js';
 import { SceneManager } from '../core/SceneManager.js';
+import { IMAService } from '../ads/IMAService.js';
 import { KeyboardController } from '../input/KeyboardController.js';
 import { MouseController } from '../input/MouseController.js';
 import { ExternalNavigationService } from '../navigation/ExternalNavigationService.js';
@@ -32,6 +33,9 @@ export class GameApplication {
     this.renderer = new CanvasRenderer(canvas);
     this.sceneManager = new SceneManager();
     this.navigationService = new ExternalNavigationService();
+    this.imaService = new IMAService({
+      adContainer: this.adContainer,
+    });
     this.keyboardController = new KeyboardController({
       sceneManager: this.sceneManager,
     });
@@ -53,6 +57,7 @@ export class GameApplication {
       renderer: this.renderer,
       sceneManager: this.sceneManager,
       navigationService: this.navigationService,
+      imaService: this.imaService,
     };
 
     this.sceneManager.register(
@@ -91,6 +96,7 @@ export class GameApplication {
   destroy() {
     this.stop();
     this.sceneManager.destroy();
+    this.imaService.destroy();
   }
 
   update(deltaTime) {

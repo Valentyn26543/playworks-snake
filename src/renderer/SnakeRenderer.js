@@ -14,22 +14,23 @@ export class SnakeRenderer {
 
     context.save();
     context.shadowColor = isHead
-      ? 'rgba(12, 74, 30, 0.42)'
-      : 'rgba(12, 74, 30, 0.22)';
-    context.shadowBlur = isHead ? 8 : 4;
+      ? 'rgba(74, 222, 128, 0.52)'
+      : 'rgba(45, 212, 191, 0.22)';
+    context.shadowBlur = isHead ? 14 : 8;
     context.shadowOffsetY = 2;
 
     const gradient = context.createLinearGradient(x, y, x, y + size);
-    gradient.addColorStop(0, isHead ? '#7ced4b' : '#62c83d');
-    gradient.addColorStop(1, isHead ? '#258d37' : '#2d9c35');
+    gradient.addColorStop(0, isHead ? '#d9f99d' : '#86efac');
+    gradient.addColorStop(0.48, isHead ? '#34d399' : '#22c55e');
+    gradient.addColorStop(1, isHead ? '#0f766e' : '#15803d');
     context.fillStyle = gradient;
     this.roundRect(context, x, y, size, size, radius);
     context.fill();
 
     context.shadowColor = 'transparent';
     context.strokeStyle = isHead
-      ? 'rgba(240, 255, 232, 0.68)'
-      : 'rgba(240, 255, 232, 0.2)';
+      ? 'rgba(236, 253, 245, 0.78)'
+      : 'rgba(236, 253, 245, 0.24)';
     context.lineWidth = isHead ? 2 : 1;
     this.roundRect(context, x, y, size, size, radius);
     context.stroke();

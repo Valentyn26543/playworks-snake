@@ -14,8 +14,8 @@ export class FoodRenderer {
     const radius = boardLayout.cellSize * 0.38;
 
     context.save();
-    context.shadowColor = 'rgba(255, 45, 85, 0.46)';
-    context.shadowBlur = 12;
+    context.shadowColor = 'rgba(251, 191, 36, 0.58)';
+    context.shadowBlur = 16;
     context.shadowOffsetY = 2;
 
     const gradient = context.createRadialGradient(
@@ -26,9 +26,9 @@ export class FoodRenderer {
       centerY,
       radius,
     );
-    gradient.addColorStop(0, '#ffe66d');
-    gradient.addColorStop(0.32, '#ff4d6d');
-    gradient.addColorStop(1, '#b7094c');
+    gradient.addColorStop(0, '#fef3c7');
+    gradient.addColorStop(0.34, '#f59e0b');
+    gradient.addColorStop(1, '#e11d48');
 
     context.fillStyle = gradient;
     context.beginPath();
@@ -36,7 +36,7 @@ export class FoodRenderer {
     context.fill();
 
     context.shadowColor = 'transparent';
-    context.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+    context.strokeStyle = 'rgba(255, 255, 255, 0.82)';
     context.lineWidth = 2;
     context.beginPath();
     context.arc(centerX, centerY, radius - 1, 0, Math.PI * 2);

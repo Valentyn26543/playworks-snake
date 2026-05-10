@@ -1,9 +1,11 @@
 import { START_DIALOG } from '../app/constants.js';
+import { BackgroundRenderer } from '../renderer/BackgroundRenderer.js';
 
 export class BootScene {
   constructor({ config, sceneManager }) {
     this.config = config;
     this.sceneManager = sceneManager;
+    this.backgroundRenderer = new BackgroundRenderer();
     this.elapsedTime = 0;
     this.bootDuration = 1000;
     this.hasCompleted = false;
@@ -30,13 +32,14 @@ export class BootScene {
     const width = renderer.getWidth();
     const height = renderer.getHeight();
 
-    context.fillStyle = this.config.backgroundColor;
-    context.fillRect(0, 0, width, height);
+    this.backgroundRenderer.render(renderer);
 
-    context.fillStyle = '#f4f7fb';
-    context.font = '48px Arial, sans-serif';
+    context.fillStyle = '#ecfeff';
+    context.font = '700 48px Arial, sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
+    context.shadowColor = 'rgba(45, 212, 191, 0.36)';
+    context.shadowBlur = 14;
     context.fillText('Loading...', width / 2, height / 2);
   }
 

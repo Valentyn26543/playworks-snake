@@ -1,5 +1,13 @@
 import { AD_OVERLAY, GAME } from '../app/constants.js';
-import { CANCEL, CONFIRM, LEFT, POINTER_DOWN, RIGHT } from '../input/InputActions.js';
+import {
+  CANCEL,
+  CONFIRM,
+  DOWN,
+  LEFT,
+  POINTER_DOWN,
+  RIGHT,
+  UP,
+} from '../input/InputActions.js';
 import { BackgroundRenderer } from '../renderer/BackgroundRenderer.js';
 import { DialogRenderer } from '../renderer/DialogRenderer.js';
 import { ButtonModel } from '../ui/ButtonModel.js';
@@ -34,12 +42,12 @@ export class GameOverDialogScene {
   destroy() {}
 
   handleInput(action, payload) {
-    if (action === LEFT) {
+    if (action === LEFT || action === UP) {
       this.dialog.selectPrevious();
       return;
     }
 
-    if (action === RIGHT) {
+    if (action === RIGHT || action === DOWN) {
       this.dialog.selectNext();
       return;
     }

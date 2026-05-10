@@ -7,14 +7,12 @@ export class MouseController {
     this.onMouseMove = (event) => this.handleMouseEvent(event, POINTER_MOVE);
     this.onMouseDown = (event) => this.handleMouseEvent(event, POINTER_DOWN);
     this.onMouseUp = (event) => this.handleMouseEvent(event, POINTER_UP);
-    this.onClick = (event) => this.handleMouseEvent(event, POINTER_DOWN);
   }
 
   start() {
     this.canvas.addEventListener('mousemove', this.onMouseMove);
     this.canvas.addEventListener('mousedown', this.onMouseDown);
     this.canvas.addEventListener('mouseup', this.onMouseUp);
-    this.canvas.addEventListener('click', this.onClick);
   }
 
   getCanvasPosition(event) {
@@ -29,6 +27,7 @@ export class MouseController {
   }
 
   handleMouseEvent(event, action) {
+    event.preventDefault();
     this.sceneManager.handleInput(action, this.getCanvasPosition(event));
   }
 
@@ -36,6 +35,5 @@ export class MouseController {
     this.canvas.removeEventListener('mousemove', this.onMouseMove);
     this.canvas.removeEventListener('mousedown', this.onMouseDown);
     this.canvas.removeEventListener('mouseup', this.onMouseUp);
-    this.canvas.removeEventListener('click', this.onClick);
   }
 }

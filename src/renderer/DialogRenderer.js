@@ -19,7 +19,7 @@ export class DialogRenderer {
 
   drawOverlay(context, width, height) {
     context.save();
-    context.fillStyle = 'rgba(0, 0, 0, 0.42)';
+    context.fillStyle = 'rgba(0, 0, 0, 0.54)';
     context.fillRect(0, 0, width, height);
     context.restore();
   }
@@ -27,9 +27,9 @@ export class DialogRenderer {
   drawPanel(context, panel) {
     context.save();
     context.shadowColor = 'rgba(0, 0, 0, 0.45)';
-    context.shadowBlur = 28;
+    context.shadowBlur = 30;
     context.shadowOffsetY = 18;
-    this.fillRoundRect(context, panel.x, panel.y, panel.width, panel.height, 18);
+    this.fillRoundRect(context, panel.x, panel.y, panel.width, panel.height, 8);
 
     const gradient = context.createLinearGradient(
       panel.x,
@@ -37,32 +37,43 @@ export class DialogRenderer {
       panel.x,
       panel.y + panel.height,
     );
-    gradient.addColorStop(0, '#172337');
-    gradient.addColorStop(1, '#0d1421');
+    gradient.addColorStop(0, '#151b25');
+    gradient.addColorStop(0.58, '#0e141c');
+    gradient.addColorStop(1, '#0a0d12');
     context.fillStyle = gradient;
     context.fill();
 
     context.shadowColor = 'transparent';
     context.lineWidth = 2;
-    context.strokeStyle = 'rgba(126, 240, 194, 0.34)';
+    context.strokeStyle = 'rgba(45, 212, 191, 0.42)';
     this.strokeRoundRect(
       context,
       panel.x,
       panel.y,
       panel.width,
       panel.height,
-      18,
+      8,
+    );
+
+    context.strokeStyle = 'rgba(244, 63, 94, 0.24)';
+    this.strokeRoundRect(
+      context,
+      panel.x + 8,
+      panel.y + 8,
+      panel.width - 16,
+      panel.height - 16,
+      6,
     );
     context.restore();
   }
 
   drawTitle(context, title, panel) {
     context.save();
-    context.fillStyle = '#eafff5';
+    context.fillStyle = '#ecfeff';
     context.font = '700 72px Arial, sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'top';
-    context.shadowColor = 'rgba(38, 255, 154, 0.38)';
+    context.shadowColor = 'rgba(45, 212, 191, 0.42)';
     context.shadowBlur = 18;
     context.fillText(title, panel.x + panel.width / 2, panel.y + 46);
     context.restore();
@@ -70,7 +81,7 @@ export class DialogRenderer {
 
   drawMessage(context, message, panel) {
     context.save();
-    context.fillStyle = '#c8d3df';
+    context.fillStyle = '#cbd5e1';
     context.font = '30px Arial, sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'top';
@@ -102,12 +113,12 @@ export class DialogRenderer {
 
     if (button.selected) {
       gradient.addColorStop(0, '#50f7ad');
-      gradient.addColorStop(1, '#18b784');
-      context.shadowColor = 'rgba(80, 247, 173, 0.55)';
-      context.shadowBlur = 18;
+      gradient.addColorStop(1, '#22d3ee');
+      context.shadowColor = 'rgba(45, 212, 191, 0.6)';
+      context.shadowBlur = 20;
     } else {
-      gradient.addColorStop(0, '#26364f');
-      gradient.addColorStop(1, '#1a2638');
+      gradient.addColorStop(0, '#202937');
+      gradient.addColorStop(1, '#151b26');
       context.shadowColor = 'rgba(0, 0, 0, 0.28)';
       context.shadowBlur = 10;
     }
@@ -118,7 +129,7 @@ export class DialogRenderer {
       button.y,
       button.width,
       button.height,
-      14,
+      8,
     );
     context.fillStyle = gradient;
     context.fill();
@@ -126,7 +137,7 @@ export class DialogRenderer {
     context.shadowColor = 'transparent';
     context.lineWidth = button.selected ? 3 : 2;
     context.strokeStyle = button.selected
-      ? 'rgba(234, 255, 245, 0.9)'
+      ? 'rgba(255, 255, 255, 0.95)'
       : 'rgba(153, 176, 204, 0.28)';
     this.strokeRoundRect(
       context,
@@ -134,10 +145,23 @@ export class DialogRenderer {
       button.y,
       button.width,
       button.height,
-      14,
+      8,
     );
 
-    context.fillStyle = button.selected ? '#071019' : '#edf6ff';
+    if (button.selected) {
+      context.strokeStyle = 'rgba(244, 63, 94, 0.82)';
+      context.lineWidth = 4;
+      context.beginPath();
+      context.moveTo(button.x - 12, button.y + 10);
+      context.lineTo(button.x - 12, button.y - 8);
+      context.lineTo(button.x + 16, button.y - 8);
+      context.moveTo(button.x + button.width + 12, button.y + button.height - 10);
+      context.lineTo(button.x + button.width + 12, button.y + button.height + 8);
+      context.lineTo(button.x + button.width - 16, button.y + button.height + 8);
+      context.stroke();
+    }
+
+    context.fillStyle = button.selected ? '#041014' : '#edf6ff';
     context.font = '700 28px Arial, sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';

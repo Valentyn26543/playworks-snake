@@ -16,19 +16,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: Arial, sans-serif;
 }
 
 #app {
   position: relative;
   width: 1280px;
   height: 720px;
-  background: #101318;
+  overflow: hidden;
+  background: #080b10;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
 }
 
 #game-canvas {
   display: block;
   width: 1280px;
   height: 720px;
+  cursor: default;
 }
 
 #ad-container {
@@ -37,5 +41,7 @@ body {
   width: 1280px;
   height: 720px;
   display: none;
+  overflow: hidden;
+  background: rgba(5, 8, 13, 0.32);
   z-index: 10;
 }

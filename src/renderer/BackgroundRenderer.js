@@ -5,20 +5,21 @@ export class BackgroundRenderer {
     const height = renderer.getHeight();
 
     const gradient = context.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#071019');
-    gradient.addColorStop(0.52, '#0d1724');
-    gradient.addColorStop(1, '#111827');
+    gradient.addColorStop(0, '#07090f');
+    gradient.addColorStop(0.48, '#101722');
+    gradient.addColorStop(1, '#171014');
     context.fillStyle = gradient;
     context.fillRect(0, 0, width, height);
 
+    this.drawAccentBands(context, width, height);
     this.drawGrid(context, width, height);
-    this.drawGlow(context, width, height);
     this.drawScanlines(context, width, height);
+    this.drawVignette(context, width, height);
   }
 
   drawGrid(context, width, height) {
     context.save();
-    context.strokeStyle = 'rgba(76, 201, 240, 0.08)';
+    context.strokeStyle = 'rgba(90, 214, 255, 0.075)';
     context.lineWidth = 1;
 
     for (let x = 0; x <= width; x += 40) {
@@ -38,21 +39,36 @@ export class BackgroundRenderer {
     context.restore();
   }
 
-  drawGlow(context, width, height) {
+  drawAccentBands(context, width, height) {
     context.save();
-    const glow = context.createRadialGradient(
-      width / 2,
-      height / 2,
-      80,
-      width / 2,
-      height / 2,
-      560,
-    );
-    glow.addColorStop(0, 'rgba(38, 255, 154, 0.14)');
-    glow.addColorStop(0.45, 'rgba(76, 201, 240, 0.06)');
-    glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    context.fillStyle = glow;
-    context.fillRect(0, 0, width, height);
+    context.lineWidth = 2;
+
+    const cyanBand = context.createLinearGradient(0, 0, width, 0);
+    cyanBand.addColorStop(0, 'rgba(45, 212, 191, 0)');
+    cyanBand.addColorStop(0.5, 'rgba(45, 212, 191, 0.18)');
+    cyanBand.addColorStop(1, 'rgba(45, 212, 191, 0)');
+    context.strokeStyle = cyanBand;
+
+    for (let y = 118; y < height; y += 164) {
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(width, y - 72);
+      context.stroke();
+    }
+
+    const roseBand = context.createLinearGradient(0, 0, width, 0);
+    roseBand.addColorStop(0, 'rgba(244, 63, 94, 0)');
+    roseBand.addColorStop(0.5, 'rgba(244, 63, 94, 0.12)');
+    roseBand.addColorStop(1, 'rgba(244, 63, 94, 0)');
+    context.strokeStyle = roseBand;
+
+    for (let y = 198; y < height + 120; y += 220) {
+      context.beginPath();
+      context.moveTo(0, y - 88);
+      context.lineTo(width, y);
+      context.stroke();
+    }
+
     context.restore();
   }
 
@@ -64,6 +80,17 @@ export class BackgroundRenderer {
       context.fillRect(0, y, width, 1);
     }
 
+    context.restore();
+  }
+
+  drawVignette(context, width, height) {
+    context.save();
+    const gradient = context.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.28)');
+    gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.32)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, width, height);
     context.restore();
   }
 }
