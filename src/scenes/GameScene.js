@@ -54,10 +54,10 @@ export class GameScene {
     const snapshot = this.gameController.getSnapshot();
 
     this.backgroundRenderer.render(renderer);
+    this.hudRenderer.render(renderer, snapshot);
     const boardLayout = this.boardRenderer.render(renderer);
     this.snakeRenderer.render(renderer, snapshot, boardLayout);
     this.foodRenderer.render(renderer, snapshot, boardLayout);
-    this.hudRenderer.render(renderer, snapshot);
   }
 
   exit() {
